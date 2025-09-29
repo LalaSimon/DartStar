@@ -17,6 +17,7 @@ DartStar/
 ## API
 
 The backend API is built with:
+
 - **NestJS** - Progressive Node.js framework
 - **Prisma** - Modern database toolkit
 - **PostgreSQL** - Database
