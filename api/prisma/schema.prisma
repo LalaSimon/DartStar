@@ -21,10 +21,10 @@ model User {
   password String
   avatar String?
   player Player?
-  createdAt String
-  updatedAt String
-  isOnline Boolean
-  lastTimeOnline String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isOnline Boolean @default(false)
+  lastTimeOnline DateTime @default(now())
 }
 
 model Player {
