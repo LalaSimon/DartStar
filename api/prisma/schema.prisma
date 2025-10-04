@@ -21,6 +21,7 @@ model User {
   password String
   avatar String?
   player Player?
+  playerId  String? @db.Uuid 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   isOnline Boolean @default(false)
@@ -30,15 +31,35 @@ model User {
 model Player {
   id          String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name        String
-  lastName    String
+  lastname    String
   nickname    String
   owner       User    @relation(fields: [ownerId], references: [id])
   ownerId     String  @db.Uuid @unique
   
   // Player stats
-  doubles     String?
-  scoring     String?
-  mentality   String?
-  charisma    String?
-  consistency String?
+  doubles     Int @default(1)
+  scoring     Int @default(1)
+  mentality   Int @default(1)
+  charisma    Int @default(1)
+  consistency Int @default(1)
+  pressure_handling Int @default(1)
+
+  // Training sessions
+  trainingSessions TrainingSession[]
+}
+
+model TrainingSession {
+  id          String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  player      Player  @relation(fields: [playerId], references: [id])
+  playerId    String  @db.Uuid
+  
+  skillType   String  // "doubles", "scoring", etc.
+  startTime   DateTime @default(now())
+  duration    Int     // w sekundach
+  isCompleted Boolean @default(false)
+  isActive    Boolean @default(true) // czy sesja jest aktualnie aktywna
+  
+  // Opcjonalnie: wyniki treningu
+  skillGained Int?    // ile punktów umiejętności zdobyto
+  completedAt DateTime?
 }

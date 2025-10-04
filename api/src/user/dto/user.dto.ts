@@ -1,11 +1,11 @@
 import { Exclude, Expose } from 'class-transformer';
 import { PlayerInfoDto } from 'src/player/dto/PlayerInfo.dto';
 
-export class UserResponseDto {
+export class UserDto {
   @Expose()
+  id: string;
   email: string;
   avatar: string;
-  id: string;
   createdAt: Date;
   updatedAt: Date;
   isOnline: boolean;

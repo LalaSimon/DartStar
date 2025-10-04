@@ -1,31 +1,38 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaClient, User } from 'generated/prisma';
+import { plainToInstance } from 'class-transformer';
+import { PrismaClient } from 'generated/prisma';
+import { UserDto } from './dto/user.dto';
 
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async getUsers(): Promise<User[]> {
-    return this.prisma.user.findMany();
+  async getUsers(): Promise<UserDto[]> {
+    return (
+      this.prisma.user
+        .findMany()
+        .then((users) => users.map((user) => plainToInstance(UserDto, user))) ??
+      []
+    );
   }
 
-  async getUserById(id: string): Promise<User | null> {
+  async getUserById(id: string): Promise<UserDto | null> {
     const user = await this.prisma.user.findUnique({
       where: {
         id,
       },
     });
 
-    return user ?? null;
+    return user ? plainToInstance(UserDto, user) : null;
   }
 
-  async getUserByEmail(email: string): Promise<User | null> {
+  async getUserByEmail(email: string): Promise<UserDto | null> {
     const user = await this.prisma.user.findUnique({
       where: {
         email,
       },
     });
 
-    return user ?? null;
+    return user ? plainToInstance(UserDto, user) : null;
   }
 }

@@ -1,13 +1,19 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
+import { RequestLoggingMiddleware } from './common/middleware/request-logging.middleware';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['log', 'error', 'warn', 'debug', 'verbose'],
+  });
 
   // Enable CORS
   app.enableCors();
+
+  // Apply request logging middleware
+  app.use(new RequestLoggingMiddleware().use.bind(new RequestLoggingMiddleware()));
 
   // Set global prefix
   app.setGlobalPrefix('api');
@@ -38,8 +44,9 @@ async function bootstrap() {
 
   await app.listen(port);
 
-  console.log(`🚀 Application is running on: http://localhost:${port}`);
-  console.log(
+  const logger = new Logger('Bootstrap');
+  logger.log(`🚀 Application is running on: http://localhost:${port}`);
+  logger.log(
     `📚 Swagger docs available at: http://localhost:${port}/api/docs`,
   );
 }
